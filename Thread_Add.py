@@ -34,9 +34,11 @@ def add(cookies, name, title, content):
     #print data
     ADD_URL = 'http://tieba.baidu.com/f/commit/thread/add'
     add_request = requests.post(ADD_URL, cookies=cookies, data=data, headers=HEADERS)
-    pattern_status = re.compile('err_code":(\d+),')
+    pattern_status = re.compile('error":"(.*?)",')
     try:
         status = pattern_status.search(add_request.text).group(1)
+        if status=='':
+            status = 'Success'
     except:
         status = 'unkown error'
     #print add_request.text
