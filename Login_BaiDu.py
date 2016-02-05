@@ -115,8 +115,10 @@ def get_cookies(USERNAME, PASSWORD):
     }
     login = requests.post(LOGIN_URL, headers=HEADERS, cookies=raw_cookies, data=login_data)
     pattern_status = re.compile(r'"err_no=(\d+?)&')
-    status = pattern_status.search(login.text).group(1)
-    #print login.tex
+    try:
+        status = pattern_status.search(login.text).group(1)
+    except:
+        status = 'unknown error'
     log = open('./AutoRun.log','a')
     log.write('Login Status %s\n' %(status))
     log.close()

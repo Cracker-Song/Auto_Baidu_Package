@@ -23,11 +23,14 @@ def sign(name, cookies):
         'tbs':tbs
         }
     sign_request = requests.post(SIGN_URL, headers=HEADERS, cookies=cookies, data=data)
+    '''
     pattern_sign = re.compile(r'"errno":(\d+?),')
     try:
         status = pattern_sign.search(sign_request.text).group(1)
     except:
         status = 'unknown error'
+    '''
+    status = sign_request.text
     return 'Sign Status %s' %(status)
 
 def get_tbs(cookies, name):

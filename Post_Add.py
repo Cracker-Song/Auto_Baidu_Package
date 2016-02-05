@@ -15,24 +15,31 @@ HEADERS = {
     'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36',
     'X-Requested-With':'XMLHttpRequest'
 }
-def add(cookies, name, title, content):
+def get_tbs(cookies):
+    TBS_URL = 'http://tieba.baidu.com/dc/common/tbs'
+    tbs_request = requests.get(TBS_URL, cookies=cookies, headers=HEADERS)
+    pattern_tbs = re.compile(r'"tbs":"(.+?)",')
+    tbs = pattern_tbs.search(tbs_request.text).group(1)
+    return tbs
+def get_fid(name):
+    FID_URL = 'http://tieba.baidu.com/f?ie=utf-8&kw=%s&fr=search' %(name)
+    fid_request = requests.get(FID_URL, headers=HEADERS)
+    pattern_fid = re.compile(r'PageData.forum = {\s*\'id\': (.+?),')
+    fid = pattern_fid.search(fid_request.text).group(1)
+    return fid
+def add(cookies, name, tid, content):
     tbs = get_tbs(cookies).encode('utf-8')
     fid = get_fid(name).encode('utf-8')
-    #print cookies
     data = {
         'ie':'utf-8',
         'kw':name,
         'fid':fid,
+        'tid':tid,
         'tbs':tbs,
-        'title':title,
         'content':content,
-        'tid':'0',
-        'floor_num':'0',
-        'rich_text':'1',
-        '__type__':'thread'
+        '__type__':'reply'
     }
-    #print data
-    ADD_URL = 'http://tieba.baidu.com/f/commit/thread/add'
+    ADD_URL = 'http://tieba.baidu.com/f/commit/post/add'
     add_request = requests.post(ADD_URL, cookies=cookies, data=data, headers=HEADERS)
     status = add_request.text
     '''
@@ -44,20 +51,4 @@ def add(cookies, name, title, content):
     except:
         status = 'unkown error'
     '''
-    #print add_request.text
     return 'Add Status %s' %(status)
-    #return add_request.text
-
-def get_tbs(cookies):
-    TBS_URL = 'http://tieba.baidu.com/dc/common/tbs'
-    tbs_request = requests.get(TBS_URL, cookies=cookies, headers=HEADERS)
-    pattern_tbs = re.compile(r'"tbs":"(.+?)",')
-    tbs = pattern_tbs.search(tbs_request.text).group(1)
-    return tbs
-
-def get_fid(name):
-    FID_URL = 'http://tieba.baidu.com/f?ie=utf-8&kw=%s&fr=search' %(name)
-    fid_request = requests.get(FID_URL, headers=HEADERS)
-    pattern_fid = re.compile(r'PageData.forum = {\s*\'id\': (.+?),')
-    fid = pattern_fid.search(fid_request.text).group(1)
-    return fid
