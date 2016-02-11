@@ -5,7 +5,7 @@ import Robot
 
 
 def get_atme(cookies):
-    atme_url = 'http://tieba.baidu.com/i/382850870/atme'
+    atme_url = 'http://tieba.baidu.com/i/yoururl/atme'
     atme_request = requests.get(atme_url, cookies=cookies)
     atme_content = atme_request.text
     atme_pattern = re.compile(r'<div class="atme_text clearfix j_atme">\s+(.+?)\s+(.+?)\s+</div>')
@@ -44,7 +44,7 @@ def get_atme(cookies):
             tmp_url = atme_url_pattern.search(atme[1]).group(1)
             tmp_user = atme_user_pattern.search(atme[0]).group(1)[:-1]
             tmp_content = atme_content_pattern.search(atme[1]).group(1)
-            tmp_new_content = tmp_content.replace(u'<b>@\u54e5\u4e0d\u8bf4\u4ec0\u4e48\u4e86</b> \u53ec\u5524\u9017\u6bd4 ', '')
+            tmp_new_content = tmp_content.replace(u'<b>@yourname</b> \u53ec\u5524\u9017\u6bd4 ', '')
             tmp_respond = Robot.robot(tmp_new_content, tmp_user)
             user = tmp_user
             urls_all = url_all

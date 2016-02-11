@@ -4,7 +4,7 @@ import requests
 
 
 def robot(content, userid):
-    key = 'e26b51b1b28c56f50612cee49bbba898'
+    key = ‘yourkey’
     robot_url = 'http://www.tuling123.com/openapi/api?key=%s&info=%s&userid=%s' % (key, content, userid)
     robot_request = requests.post(robot_url)#, headers=headers)
     respond_robot = json.loads(robot_request.text)
