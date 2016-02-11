@@ -23,9 +23,12 @@ def get_tbs(cookies):
     return tbs
 def get_fid(name):
     FID_URL = 'http://tieba.baidu.com/f?ie=utf-8&kw=%s&fr=search' %(name)
+    #print type(FID_URL)
     fid_request = requests.get(FID_URL, headers=HEADERS)
-    pattern_fid = re.compile(r'PageData.forum = {\s*\'id\': (.+?),')
+    pattern_fid = re.compile(r'"forum_id":(\d+?),')
+    #print fid_request.text
     fid = pattern_fid.search(fid_request.text).group(1)
+    #print type(fid)
     return fid
 def add(cookies, name, tid, content):
     tbs = get_tbs(cookies).encode('utf-8')
@@ -39,6 +42,7 @@ def add(cookies, name, tid, content):
         'content':content,
         '__type__':'reply'
     }
+    print data
     ADD_URL = 'http://tieba.baidu.com/f/commit/post/add'
     add_request = requests.post(ADD_URL, cookies=cookies, data=data, headers=HEADERS)
     status = add_request.text
@@ -51,4 +55,5 @@ def add(cookies, name, tid, content):
     except:
         status = 'unkown error'
     '''
-    return 'Add Status %s' %(status)
+    #print status
+    return 'Post Add Status %s' %(status)
