@@ -3,8 +3,10 @@ import time
 import Auto_Sign
 import Post_Add
 import Thread_Add
+'''
 import Keyword_Search
 import Keyword_weather
+'''
 import Get_Atme
 
 
@@ -32,7 +34,7 @@ def thread_add(name, title, content):
 def sign(name):
     return Auto_Sign.sign(name, cookies)
 
-
+'''
 def post_with_keyword(name, keyword, content, mark):
     content += mark
     status = []
@@ -44,7 +46,7 @@ def post_with_keyword(name, keyword, content, mark):
 
 def post_keyword_weather(name):
     return Keyword_weather.post_weather_tids(name, cookies)
-
+'''
 
 def get_atme():
     return Get_Atme.get_atme(cookies)
