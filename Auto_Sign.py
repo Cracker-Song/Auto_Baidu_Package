@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
 import re
+import json
+import hashlib
 import requests
-HEADERS = {
-    'Accept':'application/json, text/javascript, */*; q=0.01',
-    'Accept-Encoding':'gzip, deflate',
-    'Accept-Language':'zh-CN,zh;q=0.8,en;q=0.6',
-    'Connection':'keep-alive',
-    'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-    'DNT':'1',
-    'Host':'tieba.baidu.com',
-    'Origin':'http://tieba.baidu.com',
-    'Referer':'http://tieba.baidu.com',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36',
-    'X-Requested-With':'XMLHttpRequest'
-}
-def sign(name, cookies):
-    SIGN_URL = 'http://tieba.baidu.com/sign/add'
+def sign(name, cookies, bduss):
+    SIGN_URL = 'http://c.tieba.baidu.com/c/c/forum/sign'
     tbs = get_tbs(cookies, name)
+    fid = get_fid(name)
+    sign_string = 'BDUSS=%sfid=%dkw=%stbs=%stiebaclient!!!' % (bduss, fid , name, tbs.encode('utf-8'))
+    sign_md5 = hashlib.md5(sign_string).hexdigest().upper()
     data = {
-        'ie':'utf-8',
+        'BDUSS':bduss,
+        'fid':fid,
         'kw':name,
-        'tbs':tbs
-        }
-    sign_request = requests.post(SIGN_URL, headers=HEADERS, cookies=cookies, data=data)
+        'tbs':tbs.encode('utf-8'),
+        'sign':sign_md5
+    }
+
+    #print type(sign_md5)
+
+    sign_request = requests.post(SIGN_URL, data=data)
     '''
     pattern_sign = re.compile(r'"errno":(\d+?),')
     try:
@@ -31,11 +28,20 @@ def sign(name, cookies):
         status = 'unknown error'
     '''
     status = sign_request.text
+    #print status
     return 'Sign Status %s' %(status)
 
 def get_tbs(cookies, name):
     TBS_URL = 'http://tieba.baidu.com/dc/common/tbs'
-    tbs_request = requests.get(TBS_URL, cookies=cookies, headers=HEADERS)
+    tbs_request = requests.get(TBS_URL, cookies=cookies)
     pattern_tbs = re.compile(r'"tbs":"(.+?)",')
     tbs = pattern_tbs.search(tbs_request.text).group(1)
     return tbs
+
+def get_fid(name):
+    url = 'http://tieba.baidu.com/f/commit/share/fnameShareApi?ie=utf-8&fname=%s' % name
+    fid_request = requests.get(url)
+    fid_json = json.loads(fid_request.content)
+    fid = fid_json['data']['fid']
+    #print type(fid)
+    return fid
