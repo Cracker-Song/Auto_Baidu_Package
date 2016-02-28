@@ -24,10 +24,10 @@ def add(cookies, name, tid, content, bduss, type):
     fid = get_fid(name).encode('utf-8')
     data = {
         'BDUSS':bduss,
-        '_client_id':'wappc_1454578461495_469',
+        '_client_id':'wappc_1454578461495_888’,
         '_client_type':type,
         '_client_version':"7.2.0",
-        '_phone_imei':'F8527C479CC9913F5DFE5C38B5E56031',
+        '_phone_imei':'F2854C274CC4567F5DFE5C54B5E46738’,
         'anonymous':'1',
         'content':content,
         'fid':fid,
