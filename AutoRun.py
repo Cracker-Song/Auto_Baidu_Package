@@ -22,7 +22,7 @@ except:
 
 
 def post_add(name, tid, content):
-    return Post_Add.add(cookies, name, tid, content)
+    return Post_Add.add(cookies, name, tid, content, cookies['BDUSS'], '3')
 
 
 def thread_add(name, title, content):
